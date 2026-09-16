@@ -5,6 +5,24 @@
 > 🌐 **Try the project live:**
 > **[👉 Open Live Demo](https://awsrmmustansarjavaid.github.io/charlie-mj-chrono-journey/)**
 
+## ⏳✨ Project Description
+
+> ⏳✨ **Time has a story. Let’s make it visible.**
+
+Introducing **Charlie MJ Chrono Journey** 🚀 — a modern countdown and time-journey web project that transforms the distance between two moments into a beautiful, interactive experience.
+
+### ✨ Features
+
+- 🕐 **Live current time**
+- 📅 **Date & calendar display**
+- 🌍 **Timezone selection**
+- ⏳ **Years • Months • Days • Hours • Minutes • Seconds**
+- ➕ **Multiple countdowns**
+- 🎨 **Fancy animated UI & background effects**
+- 💻 **Built with HTML, CSS, JavaScript & Bootstrap**
+
+From **24 March 2023, 01:01 AM** to today — every second tells part of the journey. ❤️
+
 ---
 
 **Track the exact time elapsed between any moment and now.**
