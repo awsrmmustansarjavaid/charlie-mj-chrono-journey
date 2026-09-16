@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>charlie-mj-chrono-journey — Track the exact time between any moment and now</title>
+  <meta name="description" content="charlie-mj-chrono-journey measures the precise years, months, days, hours, minutes and seconds between any moment and now, across timezones, with internet-verified time." />
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏳</text></svg>" />
+
+  <!-- Fonts: Fraunces (headline serif) + Inter (UI sans) + JetBrains Mono (numerals) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap (grid, utilities, modal) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- App styles -->
+  <link rel="stylesheet" href="app/css/style.css">
+  <link rel="stylesheet" href="app/css/animations.css">
+  <link rel="stylesheet" href="app/css/responsive.css">
+</head>
+<body>
+
+  <!-- ============================================================
+       BACKGROUND: a single slow-rotating dial ring behind everything.
+       Purely decorative, aria-hidden, sits behind all content.
+  ============================================================ -->
+  <div class="cj-backdrop" aria-hidden="true">
+    <div class="cj-dial-ring cj-dial-ring--outer"></div>
+    <div class="cj-dial-ring cj-dial-ring--inner"></div>
+    <div class="cj-backdrop-wash"></div>
+  </div>
+
+  <div class="cj-page">
+
+    <!-- ============================================================
+         HEADER
+    ============================================================ -->
+    <header class="cj-header">
+      <div class="cj-header-mark">
+        <span class="cj-header-glyph">⏳</span>
+        <div>
+          <p class="cj-brand">charlie-mj-chrono-journey</p>
+          <p class="cj-tagline">Track the exact time elapsed between any moment and now.</p>
+        </div>
+      </div>
+
+      <div class="cj-header-controls">
+        <button id="themeToggle" class="cj-icon-btn" type="button" title="Switch theme" aria-label="Switch between light and dark theme">
+          <i class="bi bi-moon-stars"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- ============================================================
+         LIVE CLOCK
+    ============================================================ -->
+    <section class="cj-plate cj-clock-plate" aria-label="Current time">
+      <div class="cj-clock-status">
+        <span id="timeSourceDot" class="cj-status-dot"></span>
+        <span id="timeSourceLabel">Checking internet time…</span>
+      </div>
+
+      <p id="clockDay" class="cj-clock-day">—</p>
+      <p id="clockDate" class="cj-clock-date">—</p>
+
+      <div class="cj-clock-time">
+        <span id="clockTime">--:--:--</span>
+        <span id="clockMeridiem" class="cj-clock-meridiem"></span>
+      </div>
+
+      <div class="cj-clock-footer">
+        <button id="clockFormatToggle" class="cj-link-btn" type="button">Switch to 24-hour</button>
+        <span class="cj-clock-zone"><i class="bi bi-geo-alt"></i> <span id="clockZoneLabel">Asia/Karachi · UTC+05:00</span></span>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PRIMARY JOURNEY — hero elapsed-time plate
+    ============================================================ -->
+    <section class="cj-plate cj-hero-plate" aria-label="Primary time journey">
+      <div class="cj-plate-rivet cj-plate-rivet--tl"></div>
+      <div class="cj-plate-rivet cj-plate-rivet--tr"></div>
+      <div class="cj-plate-rivet cj-plate-rivet--bl"></div>
+      <div class="cj-plate-rivet cj-plate-rivet--br"></div>
+
+      <div class="cj-hero-top">
+        <div>
+          <p class="cj-hero-eyebrow" id="heroDirectionLabel">Time since</p>
+          <h1 id="heroTitle" class="cj-hero-title">My time journey</h1>
+        </div>
+        <button id="editPrimaryBtn" class="cj-ghost-btn" type="button">
+          <i class="bi bi-pencil"></i> Edit
+        </button>
+      </div>
+
+      <div id="heroDigits" class="cj-digit-row">
+        <!-- filled by JS: years / months / days / hours / minutes / seconds -->
+      </div>
+
+      <div class="cj-timeline">
+        <span class="cj-timeline-label" id="timelineStart">24 Mar 2023 · 01:01 AM</span>
+        <div class="cj-timeline-track"><span class="cj-timeline-dot cj-timeline-dot--start"></span><span class="cj-timeline-dot cj-timeline-dot--end"></span></div>
+        <span class="cj-timeline-label" id="timelineEnd">Now</span>
+      </div>
+
+      <div class="row cj-moment-row g-3">
+        <div class="col-12 col-md-6">
+          <div class="cj-moment-card">
+            <p class="cj-moment-heading">Start moment</p>
+            <p class="cj-moment-day" id="startDayLabel">Friday</p>
+            <p class="cj-moment-date" id="startDateLabel">24 March 2023</p>
+            <p class="cj-moment-time" id="startTimeLabel">01:01:00 AM</p>
+            <p class="cj-moment-zone" id="startZoneLabel">Asia/Karachi · UTC+05:00</p>
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="cj-moment-card">
+            <p class="cj-moment-heading">Current moment</p>
+            <p class="cj-moment-day" id="nowDayLabel">—</p>
+            <p class="cj-moment-date" id="nowDateLabel">—</p>
+            <p class="cj-moment-time" id="nowTimeLabel">—</p>
+            <p class="cj-moment-zone" id="nowZoneLabel">—</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cj-totals" id="heroTotals">
+        <!-- filled by JS: total days / hours / minutes / seconds -->
+      </div>
+    </section>
+
+    <!-- ============================================================
+         TODAY PANEL
+    ============================================================ -->
+    <section class="cj-plate cj-today-plate" aria-label="Today at a glance">
+      <p class="cj-plate-heading">Today, at a glance</p>
+      <div class="cj-today-grid" id="todayGrid">
+        <!-- filled by JS -->
+      </div>
+    </section>
+
+    <!-- ============================================================
+         JOURNEYS LIST
+    ============================================================ -->
+    <section class="cj-plate cj-journeys-plate" aria-label="Your time journeys">
+      <div class="cj-plate-top">
+        <p class="cj-plate-heading">Your time journeys</p>
+        <div class="cj-journeys-actions">
+          <button id="exportBtn" class="cj-ghost-btn" type="button" title="Export all journeys to a file">
+            <i class="bi bi-download"></i> Export
+          </button>
+          <label class="cj-ghost-btn cj-file-btn" title="Import journeys from a file">
+            <i class="bi bi-upload"></i> Import
+            <input type="file" id="importInput" accept="application/json" hidden>
+          </label>
+          <button id="addJourneyBtn" class="cj-primary-btn" type="button">
+            <i class="bi bi-plus-lg"></i> Add journey
+          </button>
+        </div>
+      </div>
+
+      <div id="journeysList" class="cj-journeys-list">
+        <!-- journey rows injected by JS -->
+      </div>
+
+      <p id="journeysEmpty" class="cj-empty-note" hidden>
+        No other journeys yet. Add a birthday, an anniversary, or a launch date to track alongside your primary one.
+      </p>
+    </section>
+
+    <footer class="cj-footer">
+      <p>charlie-mj-chrono-journey — every moment has a story. Built with HTML, CSS, JavaScript and Bootstrap. No server, no tracking — your journeys live in this browser.</p>
+    </footer>
+  </div>
+
+  <!-- ============================================================
+       ADD / EDIT JOURNEY MODAL
+  ============================================================ -->
+  <div class="modal fade" id="journeyModal" tabindex="-1" aria-labelledby="journeyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content cj-modal-content">
+        <div class="modal-header cj-modal-header">
+          <h5 class="modal-title" id="journeyModalLabel">Add a time journey</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="journeyForm">
+            <input type="hidden" id="journeyId">
+
+            <div class="mb-3">
+              <label for="journeyTitle" class="form-label cj-form-label">Title</label>
+              <input type="text" class="form-control cj-form-control" id="journeyTitle" placeholder="e.g. My project started" required>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-12 col-md-4">
+                <label for="journeyCountry" class="form-label cj-form-label">Country</label>
+                <select class="form-select cj-form-control" id="journeyCountry"></select>
+              </div>
+              <div class="col-12 col-md-8">
+                <label for="journeyTimezone" class="form-label cj-form-label">Timezone (IANA)</label>
+                <select class="form-select cj-form-control" id="journeyTimezone"></select>
+              </div>
+            </div>
+
+            <div class="row g-3 mt-1">
+              <div class="col-12 col-md-6">
+                <label for="journeyDate" class="form-label cj-form-label">Date</label>
+                <input type="date" class="form-control cj-form-control" id="journeyDate" required>
+              </div>
+              <div class="col-12 col-md-6">
+                <label for="journeyTime" class="form-label cj-form-label">Time</label>
+                <input type="time" class="form-control cj-form-control" id="journeyTime" step="1" required>
+              </div>
+            </div>
+
+            <!-- Visual calendar, kept in sync with the date input above -->
+            <div class="cj-calendar-wrap mt-3">
+              <div class="cj-calendar-header">
+                <button type="button" class="cj-icon-btn" id="calPrevMonth" aria-label="Previous month"><i class="bi bi-chevron-left"></i></button>
+                <span id="calMonthLabel" class="cj-calendar-month">—</span>
+                <button type="button" class="cj-icon-btn" id="calNextMonth" aria-label="Next month"><i class="bi bi-chevron-right"></i></button>
+              </div>
+              <div class="cj-calendar-weekdays">
+                <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
+              </div>
+              <div id="calGrid" class="cj-calendar-grid"></div>
+            </div>
+
+            <!-- Moment details preview: day of week, offset, day of year -->
+            <div class="cj-selected-moment mt-3" id="selectedMomentPreview">
+              <p class="cj-moment-heading">Selected moment</p>
+              <p id="selectedMomentText">—</p>
+            </div>
+
+            <div class="form-check mt-3">
+              <input class="form-check-input" type="checkbox" id="journeyFavorite">
+              <label class="form-check-label cj-form-label" for="journeyFavorite">
+                Show as the primary journey at the top
+              </label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer cj-modal-footer">
+          <button type="button" class="cj-ghost-btn" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" id="saveJourneyBtn" class="cj-primary-btn"><i class="bi bi-check2"></i> Save journey</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap bundle (Popper + JS) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- App modules, order matters: each attaches helpers to the shared `CJ` namespace -->
+  <script src="app/js/time-api.js"></script>
+  <script src="app/js/timezone.js"></script>
+  <script src="app/js/duration.js"></script>
+  <script src="app/js/calendar.js"></script>
+  <script src="app/js/clock.js"></script>
+  <script src="app/js/storage.js"></script>
+  <script src="app/js/app.js"></script>
+</body>
+</html>

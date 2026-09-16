@@ -1,0 +1,96 @@
+/* ==========================================================================
+   charlie-mj-chrono-journey — animations
+   One deliberate ambient motion (a slow-turning dial, like an astronomical
+   clock) rather than scattered particles/gradients everywhere. Everything
+   else animates only in response to something changing (a digit ticking
+   over, a card opening).
+   ========================================================================== */
+
+.cj-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.cj-backdrop-wash {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(1200px 700px at 15% -10%, rgba(201, 161, 94, 0.10), transparent 60%),
+    radial-gradient(900px 700px at 110% 30%, rgba(181, 113, 58, 0.08), transparent 55%);
+}
+
+/* Faint engraved dial rings, off-center, slowly rotating like a chronometer
+   bezel. Built from conic-gradient tick marks rather than an SVG/image so
+   the whole page stays a single file. */
+.cj-dial-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  opacity: 0.35;
+}
+
+.cj-dial-ring::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    var(--brass) 0deg 1deg,
+    transparent 1deg 30deg
+  );
+  mask: radial-gradient(farthest-side, transparent calc(100% - 10px), #000 calc(100% - 9px));
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 10px), #000 calc(100% - 9px));
+  opacity: 0.5;
+}
+
+.cj-dial-ring--outer {
+  width: 900px;
+  height: 900px;
+  top: -420px;
+  right: -320px;
+  animation: cjDialSpin 220s linear infinite;
+}
+
+.cj-dial-ring--inner {
+  width: 560px;
+  height: 560px;
+  bottom: -300px;
+  left: -220px;
+  animation: cjDialSpin 160s linear infinite reverse;
+}
+
+@keyframes cjDialSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Digit "flip" pulse when a value ticks over — a functional cue, not decoration */
+@keyframes cjDigitFlip {
+  0%   { transform: translateY(-6px); opacity: 0.35; }
+  60%  { transform: translateY(1px);  opacity: 1; }
+  100% { transform: translateY(0);    opacity: 1; }
+}
+
+/* Gentle entrance for the page shell only — one orchestrated moment on load */
+.cj-page {
+  animation: cjPageIn 0.5s ease both;
+}
+
+@keyframes cjPageIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Modal fade already handled by Bootstrap; add a soft glow to the primary
+   action when a journey is saved, purely as a confirmation cue. */
+.cj-save-flash {
+  animation: cjSaveFlash 0.6s ease;
+}
+
+@keyframes cjSaveFlash {
+  0%   { box-shadow: 0 0 0 0 rgba(201,161,94,0.5); }
+  100% { box-shadow: 0 0 0 14px rgba(201,161,94,0); }
+}

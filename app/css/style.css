@@ -1,0 +1,624 @@
+/* ==========================================================================
+   charlie-mj-chrono-journey — core stylesheet
+   Design language: a brass-and-navy instrument panel — think a ship's
+   chronometer or an astronomical dial, not a generic SaaS dashboard.
+   ========================================================================== */
+
+/* ---- Design tokens ------------------------------------------------------ */
+:root {
+  /* Base palette (dark, default) */
+  --bg-deep: #0b1220;
+  --bg-panel: #10192b;
+  --bg-panel-raised: #16223a;
+  --brass: #c9a15e;
+  --brass-bright: #e4c384;
+  --copper: #b5713a;
+  --ink: #ede6d6;
+  --ink-soft: #cfc7b4;
+  --muted: #8b93a6;
+  --line: rgba(201, 161, 94, 0.22);
+  --line-strong: rgba(201, 161, 94, 0.45);
+  --shadow-deep: rgba(0, 0, 0, 0.45);
+  --good: #7fbf8f;
+
+  /* Typography */
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "Courier New", monospace;
+
+  --radius-plate: 4px;
+  --radius-pill: 999px;
+}
+
+/* Light theme overrides */
+:root[data-theme="light"] {
+  --bg-deep: #f3efe4;
+  --bg-panel: #fffdf8;
+  --bg-panel-raised: #fbf6ea;
+  --brass: #9c7a3f;
+  --brass-bright: #7a5f2f;
+  --copper: #a1592b;
+  --ink: #241d10;
+  --ink-soft: #4a4030;
+  --muted: #756c58;
+  --line: rgba(156, 122, 63, 0.28);
+  --line-strong: rgba(156, 122, 63, 0.5);
+  --shadow-deep: rgba(90, 70, 30, 0.12);
+  --good: #2f7a45;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  min-height: 100%;
+}
+
+body {
+  background: var(--bg-deep);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  margin: 0;
+  transition: background 0.4s ease, color 0.4s ease;
+  overflow-x: hidden;
+}
+
+.cj-page {
+  position: relative;
+  z-index: 1;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+}
+
+/* ---- Header -------------------------------------------------------------*/
+.cj-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.cj-header-mark {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.cj-header-glyph {
+  font-size: 34px;
+  line-height: 1;
+  filter: sepia(0.3) saturate(1.4);
+}
+
+.cj-brand {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 26px;
+  margin: 0;
+  color: var(--ink);
+  letter-spacing: 0.2px;
+}
+
+.cj-tagline {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.cj-header-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.cj-icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line);
+  background: var(--bg-panel);
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.15s ease;
+}
+.cj-icon-btn:hover { border-color: var(--line-strong); transform: translateY(-1px); }
+
+/* ---- Generic "plate" surface --------------------------------------------*/
+.cj-plate {
+  position: relative;
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-plate);
+  padding: 26px 28px;
+  margin-bottom: 22px;
+  box-shadow: 0 18px 40px -24px var(--shadow-deep);
+}
+
+.cj-plate-heading {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 20px;
+  margin: 0 0 16px;
+}
+
+.cj-plate-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+/* Brass corner rivets — reserved for the single hero plate only */
+.cj-plate-rivet {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--brass);
+  opacity: 0.7;
+}
+.cj-plate-rivet--tl { top: 10px; left: 10px; }
+.cj-plate-rivet--tr { top: 10px; right: 10px; }
+.cj-plate-rivet--bl { bottom: 10px; left: 10px; }
+.cj-plate-rivet--br { bottom: 10px; right: 10px; }
+
+/* ---- Live clock plate ----------------------------------------------------*/
+.cj-clock-plate {
+  text-align: center;
+  padding-top: 22px;
+}
+
+.cj-clock-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.cj-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+  display: inline-block;
+}
+.cj-status-dot.is-online { background: var(--good); box-shadow: 0 0 0 3px rgba(127,191,143,0.18); }
+.cj-status-dot.is-local { background: var(--copper); }
+
+.cj-clock-day {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  letter-spacing: 0.3px;
+}
+
+.cj-clock-date {
+  margin: 2px 0 6px;
+  font-family: var(--font-display);
+  font-size: 19px;
+  color: var(--ink-soft);
+}
+
+.cj-clock-time {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: clamp(40px, 9vw, 64px);
+  letter-spacing: 1px;
+  color: var(--brass-bright);
+  font-variant-numeric: tabular-nums;
+}
+
+.cj-clock-meridiem {
+  font-size: 0.4em;
+  margin-left: 8px;
+  color: var(--muted);
+  vertical-align: middle;
+}
+
+.cj-clock-footer {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.cj-link-btn {
+  background: none;
+  border: none;
+  color: var(--brass);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 0;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+
+.cj-clock-zone i { margin-right: 3px; }
+
+/* ---- Hero (primary journey) plate ---------------------------------------*/
+.cj-hero-plate {
+  padding: 30px 30px 26px;
+}
+
+.cj-hero-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.cj-hero-eyebrow {
+  margin: 0 0 4px;
+  color: var(--brass);
+  font-size: 13.5px;
+  font-family: var(--font-display);
+  font-style: italic;
+}
+
+.cj-hero-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(22px, 4vw, 30px);
+  color: var(--ink);
+}
+
+.cj-ghost-btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 13.5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.cj-ghost-btn:hover { border-color: var(--brass); color: var(--brass-bright); }
+
+.cj-primary-btn {
+  background: var(--brass);
+  border: 1px solid var(--brass);
+  color: #1a1406;
+  padding: 9px 18px;
+  border-radius: var(--radius-pill);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  transition: filter 0.2s ease, transform 0.15s ease;
+}
+.cj-primary-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+
+/* Digit row: years / months / days / hours / minutes / seconds */
+.cj-digit-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  margin: 6px 0 22px;
+}
+
+.cj-digit-cell {
+  text-align: center;
+  padding: 14px 4px;
+  background: var(--bg-panel-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-plate);
+}
+
+.cj-digit-value {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: clamp(22px, 4.4vw, 38px);
+  color: var(--brass-bright);
+  font-variant-numeric: tabular-nums;
+  display: inline-block;
+}
+
+.cj-digit-value.cj-flip { animation: cjDigitFlip 0.5s ease; }
+
+.cj-digit-label {
+  margin: 4px 0 0;
+  font-size: 11.5px;
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-style: italic;
+}
+
+/* Timeline */
+.cj-timeline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 6px 0 22px;
+}
+
+.cj-timeline-label {
+  font-size: 12.5px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.cj-timeline-track {
+  position: relative;
+  flex: 1;
+  height: 1px;
+  background: var(--line-strong);
+}
+
+.cj-timeline-dot {
+  position: absolute;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--brass);
+  transform: translate(-50%, -50%);
+}
+.cj-timeline-dot--start { left: 0; }
+.cj-timeline-dot--end { left: 100%; }
+
+/* Moment cards (start / now) */
+.cj-moment-row { margin-bottom: 18px; }
+
+.cj-moment-card {
+  background: var(--bg-panel-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-plate);
+  padding: 16px 18px;
+  height: 100%;
+}
+
+.cj-moment-heading {
+  margin: 0 0 8px;
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  color: var(--brass);
+  font-family: var(--font-display);
+  font-style: italic;
+}
+
+.cj-moment-day { margin: 0; color: var(--muted); font-size: 13px; }
+.cj-moment-date { margin: 2px 0 2px; font-family: var(--font-display); font-size: 17px; }
+.cj-moment-time { margin: 0; font-family: var(--font-mono); font-size: 15px; color: var(--brass-bright); }
+.cj-moment-zone { margin: 6px 0 0; font-size: 12px; color: var(--muted); }
+
+/* Totals strip */
+.cj-totals {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  border-top: 1px dashed var(--line);
+  padding-top: 16px;
+}
+
+.cj-total-item { text-align: center; }
+.cj-total-value {
+  font-family: var(--font-mono);
+  font-size: clamp(15px, 2.6vw, 20px);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.cj-total-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* ---- Today plate ----------------------------------------------------------*/
+.cj-today-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.cj-today-item {
+  background: var(--bg-panel-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-plate);
+  padding: 14px;
+  text-align: center;
+}
+
+.cj-today-value {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  color: var(--brass-bright);
+}
+
+.cj-today-label {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* ---- Journeys list --------------------------------------------------------*/
+.cj-journeys-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cj-file-btn { position: relative; }
+
+.cj-journeys-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.cj-journey-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--bg-panel-raised);
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--line-strong);
+  border-radius: var(--radius-plate);
+  padding: 14px 16px;
+}
+
+.cj-journey-main { min-width: 220px; }
+
+.cj-journey-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cj-journey-sub {
+  margin: 2px 0 0;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.cj-journey-digits {
+  font-family: var(--font-mono);
+  color: var(--brass-bright);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cj-journey-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.cj-journey-actions .cj-icon-btn {
+  width: 34px;
+  height: 34px;
+  font-size: 14px;
+}
+
+.cj-star-btn.is-favorite { color: var(--brass-bright); border-color: var(--brass); }
+
+.cj-empty-note {
+  color: var(--muted);
+  font-size: 13.5px;
+  margin: 18px 2px 2px;
+}
+
+/* ---- Footer ---------------------------------------------------------------*/
+.cj-footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12.5px;
+  margin-top: 30px;
+  padding: 0 20px;
+}
+
+/* ---- Calendar widget (inside modal) ---------------------------------------*/
+.cj-calendar-wrap {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-plate);
+  padding: 12px 14px;
+  background: var(--bg-panel-raised);
+}
+
+.cj-calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.cj-calendar-month {
+  font-family: var(--font-display);
+  font-size: 15px;
+}
+
+.cj-calendar-weekdays,
+.cj-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  text-align: center;
+}
+
+.cj-calendar-weekdays span {
+  font-size: 11px;
+  color: var(--muted);
+  padding-bottom: 4px;
+}
+
+.cj-cal-day {
+  padding: 7px 0;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  color: var(--ink-soft);
+}
+.cj-cal-day:hover { border-color: var(--line-strong); }
+.cj-cal-day.is-muted { color: var(--muted); opacity: 0.4; }
+.cj-cal-day.is-today { border-color: var(--line-strong); }
+.cj-cal-day.is-selected { background: var(--brass); color: #1a1406; font-weight: 600; }
+
+.cj-selected-moment {
+  border-top: 1px dashed var(--line);
+  padding-top: 12px;
+}
+#selectedMomentText {
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  color: var(--ink);
+  margin: 0;
+}
+
+/* ---- Form controls (dark-aware) -------------------------------------------*/
+.cj-form-label {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.cj-form-control {
+  background: var(--bg-panel-raised);
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+.cj-form-control:focus {
+  background: var(--bg-panel-raised);
+  color: var(--ink);
+  border-color: var(--brass);
+  box-shadow: 0 0 0 3px rgba(201,161,94,0.18);
+}
+
+.cj-modal-content {
+  background: var(--bg-panel);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.cj-modal-header, .cj-modal-footer { border-color: var(--line); }
+
+/* Focus visibility (accessibility) */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}

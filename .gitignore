@@ -1,0 +1,18 @@
+# charlie-mj-chrono-journey
+
+## OS files
+.DS_Store
+Thumbs.db
+
+## Editor files
+.vscode/
+.idea/
+*.swp
+
+## Logs
+*.log
+
+## Local env / build artifacts (kept for future growth of the project)
+node_modules/
+dist/
+.env
