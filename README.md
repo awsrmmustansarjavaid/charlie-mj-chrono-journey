@@ -1,4 +1,11 @@
-# charlie-mj-chrono-journey
+# 📌 Project Name: charlie-mj-chrono-journey
+
+# 🚀 Live Demo
+
+> 🌐 **Try the project live:**
+> **[👉 Open Live Demo](https://awsrmmustansarjavaid.github.io/charlie-mj-chrono-journey/)**
+
+---
 
 **Track the exact time elapsed between any moment and now.**
 
